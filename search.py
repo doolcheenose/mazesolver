@@ -8,7 +8,7 @@ import os
 from collections import deque
 
 pygame.font.init()
-font = pygame.font.Font('/Users/iandulchinos/Projects/mandelbrot/mandelbrot/PressStart2P.ttf', 8)
+font = pygame.font.Font('fonts/PressStart2P.ttf', 8)
 
 WIN_SIZE = (600, 700)
 GRID_WIDTH = 20
@@ -91,7 +91,7 @@ class Grid:
             print('no path exists from {0} to {1}'.format(self.start, self.end))
         print('bfs complete')
 
-
+    # TODO
     def djikstra(self):
         pass
 
@@ -133,10 +133,11 @@ class Grid:
                 return None
         return None
 
+# clearly hardcoded
 def draw_header(screen, left, top, width, height, padding):
     pygame.draw.rect(screen, LIGHT_GREY, pygame.Rect(left-padding, top-padding, width+2*padding, height+2*padding))
     pygame.draw.rect(screen, BLACK, pygame.Rect(left, top, width, height))
-    big_font = pygame.font.Font('/Users/iandulchinos/Projects/mandelbrot/mandelbrot/PressStart2P.ttf', 30)
+    big_font = pygame.font.Font('fonts/PressStart2P.ttf', 30)
     screen.blit(big_font.render('MAZE SOLVER v1.0', True, WHITE), (left+10, top+15))
 
 def draw_info(screen, left, top, width, height, padding):
@@ -182,37 +183,38 @@ if __name__ == '__main__':
     pygame.display.flip()
 
     while True:
-        events = pygame.event.get()
-        for event in events:
-            if event.type == pygame.QUIT:
-                pygame.quit()
-            elif event.type == pygame.KEYDOWN and event.mod == KMOD_NONE:
-                if event.key == K_RETURN:
-                    G.bfs()
-                elif event.key == K_c:
-                    G.clear()
-                    G.grid = [[0] * G.width for _ in range(G.length)]
-                    pygame.display.flip()
-                elif event.key == K_v:
-                    G.clear_non_obstructed()
-                    pygame.display.flip()
-            elif event.type == pygame.MOUSEBUTTONDOWN:
+        event = pygame.event.wait() # this saves a TON of cpu usage
+        #events = pygame.event.get()
+        #for event in events:
+        if event.type == pygame.QUIT:
+            pygame.quit()
+        elif event.type == pygame.KEYDOWN and event.mod == KMOD_NONE:
+            if event.key == K_RETURN:
+                G.bfs()
+            elif event.key == K_c:
+                G.clear()
+                G.grid = [[0] * G.width for _ in range(G.length)]
+                pygame.display.flip()
+            elif event.key == K_v:
                 G.clear_non_obstructed()
                 pygame.display.flip()
-                tup = G.find_rect(*pygame.mouse.get_pos())
-                if tup:
-                    (r, i, j) = tup
-                    G.grid[i][j] = not G.grid[i][j]
-                    dragging = True
-                    drag_color = BRIGHT_RED if G.grid[i][j] else WHITE
-                    pygame.draw.rect(screen, BRIGHT_RED if G.grid[i][j] else WHITE, r)
-                    pygame.display.update(r)
-            elif event.type == pygame.MOUSEBUTTONUP:
-                dragging = False
-            elif event.type == pygame.MOUSEMOTION and dragging:
-                tup = G.find_rect(*pygame.mouse.get_pos())
-                if tup:
-                    (r, i, j) = tup
-                    G.grid[i][j] = 1 if drag_color == BRIGHT_RED else 0
-                    pygame.draw.rect(screen, drag_color, r)
-                    pygame.display.update(r)
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            G.clear_non_obstructed()
+            pygame.display.flip()
+            tup = G.find_rect(*pygame.mouse.get_pos())
+            if tup:
+                (r, i, j) = tup
+                G.grid[i][j] = not G.grid[i][j]
+                dragging = True
+                drag_color = BRIGHT_RED if G.grid[i][j] else WHITE
+                pygame.draw.rect(screen, BRIGHT_RED if G.grid[i][j] else WHITE, r)
+                pygame.display.update(r)
+        elif event.type == pygame.MOUSEBUTTONUP:
+            dragging = False
+        elif event.type == pygame.MOUSEMOTION and dragging:
+            tup = G.find_rect(*pygame.mouse.get_pos())
+            if tup:
+                (r, i, j) = tup
+                G.grid[i][j] = 1 if drag_color == BRIGHT_RED else 0
+                pygame.draw.rect(screen, drag_color, r)
+                pygame.display.update(r)
