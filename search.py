@@ -14,7 +14,7 @@ WIN_SIZE = (600, 700)
 GRID_WIDTH = 20
 GRID_LENGTH = 25
 GRID_SQUARE_LENGTH = 20
-STEP_DELAY = .005
+STEP_DELAY = .002
 OFFSETS = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 
 # preset colors
@@ -182,6 +182,7 @@ if __name__ == '__main__':
     draw_info(screen, 50, 80, 500, 150, 3)
     pygame.display.flip()
 
+    searching = False
     while True:
         event = pygame.event.wait() # this saves a TON of cpu usage
         #events = pygame.event.get()
@@ -191,6 +192,7 @@ if __name__ == '__main__':
         elif event.type == pygame.KEYDOWN and event.mod == KMOD_NONE:
             if event.key == K_RETURN:
                 G.bfs()
+
             elif event.key == K_c:
                 G.clear()
                 G.grid = [[0] * G.width for _ in range(G.length)]

@@ -7,4 +7,5 @@ Font in the app can be found [here](https://fonts.google.com/specimen/Press+Star
 
 To run, download files and in main directory execute `python search.py` or `python3 search.py`.
 
-
+Example:
+![](maze_example.gif)
